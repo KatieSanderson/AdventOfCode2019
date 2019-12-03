@@ -21,18 +21,33 @@ public class Day3 {
         Set<Point> wireSet2 = new HashSet<>();
         parseInstructions(wireSet2, wireInput2);
 
-        Set<Point> intersection = wireSet1.stream()
+        Set<Point> intersection1 = wireSet1.stream()
                 .filter(wireSet2::contains)
                 .collect(Collectors.toSet());
-        intersection.remove(new Point(0, 0));
 
-        System.out.println(findMinManhattanDistance(intersection));
+        Set<Point> intersection2 = wireSet2.stream()
+                .filter(wireSet1::contains)
+                .collect(Collectors.toSet());
+
+        System.out.println("Part 1: " + findMinManhattanDistanceByDistance(intersection1));
+        System.out.println("Part 2: " + findMinManhattanDistanceByStep(intersection1, intersection2));
     }
 
-    private static int findMinManhattanDistance(Set<Point> intersection) {
+    private static int findMinManhattanDistanceByStep(Set<Point> wireSet1, Set<Point> wireSet2) {
+        int minManhattanDistance = Integer.MAX_VALUE;
+        for (Point p1 : wireSet1) {
+            for (Point p2 : wireSet2) {
+                if (p1.equals(p2)) {
+                    minManhattanDistance = Math.min(minManhattanDistance, p1.getStep() + p2.getStep());
+                }
+            }
+        }
+        return minManhattanDistance;
+    }
+
+    private static int findMinManhattanDistanceByDistance(Set<Point> intersection) {
         int minManhattanDistance = Integer.MAX_VALUE;
         for (Point p : intersection) {
-//            System.out.println(minManhattanDistance + " " + (p.getyCoordinate() + p.getxCoordinate()));
             minManhattanDistance = Math.min(minManhattanDistance, Math.abs(p.getxCoordinate()) + Math.abs(p.getyCoordinate()));
         }
         return minManhattanDistance;
@@ -45,31 +60,34 @@ public class Day3 {
         for (String str : input) {
             char direction = str.charAt(0);
             int count = Integer.parseInt(str.substring(1));
-//            System.out.println(direction + " " + count);
-//            System.out.println(currentX + " Y : " + currentY);
+
             switch (direction) {
                 case 'R' :
                     for (int i = 0; i < count; i++) {
-                        set.add(new Point(currentX, currentY, step));
                         currentX++;
+                        step++;
+                        set.add(new Point(currentX, currentY, step));
                     }
                     break;
                 case 'L' :
                     for (int i = 0; i < count; i++) {
-                        set.add(new Point(currentX, currentY, step));
                         currentX--;
+                        step++;
+                        set.add(new Point(currentX, currentY, step));
                     }
                     break;
                 case 'U' :
                     for (int i = 0; i < count; i++) {
-                        set.add(new Point(currentX, currentY, step));
                         currentY++;
+                        step++;
+                        set.add(new Point(currentX, currentY, step));
                     }
                     break;
                 case 'D' :
                     for (int i = 0; i < count; i++) {
-                        set.add(new Point(currentX, currentY, step));
                         currentY--;
+                        step++;
+                        set.add(new Point(currentX, currentY, step));
                     }
                     break;
                 default :
