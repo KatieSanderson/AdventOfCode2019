@@ -8,7 +8,7 @@ public class Day4 {
         int current = low;
         int count = 0;
         while (current <= high) {
-            if (containsTwoSameAdjacents(current) && isDecreasing(current)) {
+            if (containsValidAdjacents(current) && isDecreasing(current)) {
                 count++;
             }
             current++;
@@ -16,14 +16,18 @@ public class Day4 {
         System.out.println("Part 1: " + count);
     }
 
-    private static boolean containsTwoSameAdjacents(int val) {
+    private static boolean containsValidAdjacents(int val) {
         // initialized to non 0-9 value
         int previous = 10;
         while (val > 0) {
             int current = val % 10;
-            if (current == previous) {
-                return true;
+            int equalCount = 1;
+            while (current == previous && val > 0) {
+                equalCount++;
+                val /= 10;
+                current = val % 10;
             }
+            if (equalCount == 2) return true;
             previous = current;
             val /= 10;
         }
