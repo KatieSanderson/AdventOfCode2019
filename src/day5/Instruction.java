@@ -56,13 +56,13 @@ class Instruction {
                 break;
             case 5 :
                 if (getParameterByMode(list, 0) != 0) {
-                    instructionPointer = parameters[1];
+                    instructionPointer = getParameterByMode(list, 1);
                     hasInstructionPointerBeenModified = true;
                 }
                 break;
             case 6 :
                 if (getParameterByMode(list, 0) == 0) {
-                    instructionPointer = parameters[1];
+                    instructionPointer = getParameterByMode(list, 1);
                     hasInstructionPointerBeenModified = true;
                 }
                 break;
@@ -105,11 +105,16 @@ class Instruction {
     }
 
     int getInstructionPointer() {
-        if (hasInstructionPointerBeenModified) {
-            return instructionPointer;
-        } else {
-            return 1 + parameters.length;
-        }
+        return instructionPointer;
+    }
+
+    int getNumValues() {
+        return 1 + parameters.length;
+    }
+
+
+    boolean getHasInstuctionPointerBeenModified() {
+        return hasInstructionPointerBeenModified;
     }
 
     int getOutput() {

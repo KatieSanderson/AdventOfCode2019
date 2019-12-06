@@ -24,7 +24,11 @@ public class Day5 {
             if (instruction.getOpcode() == 4) {
                 System.out.println(instruction.getOutput());
             }
-            current += instruction.getInstructionPointer();
+            if (instruction.getHasInstuctionPointerBeenModified()) {
+                current = instruction.getInstructionPointer();
+            } else {
+                current += instruction.getNumValues();
+            }
         }
     }
 }
