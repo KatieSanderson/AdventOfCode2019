@@ -15,7 +15,7 @@ public class Day5 {
                 .flatMap(str -> Arrays.stream(str.split(",")))
                 .map(Integer::parseInt).collect(Collectors.toList());
 
-        Instruction.setInputNumber(1);
+        Instruction.setInputNumber(5);
 
         List<Integer> copyList = new ArrayList<>(input);
         int current = 0;
@@ -24,7 +24,7 @@ public class Day5 {
             if (instruction.getOpcode() == 4) {
                 System.out.println(instruction.getOutput());
             }
-            current += instruction.getNumMetadata();
+            current += instruction.getInstructionPointer();
         }
     }
 }

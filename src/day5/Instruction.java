@@ -11,6 +11,8 @@ class Instruction {
     private int opcode;
     private int originalInstruction;
     private int output;
+    private int instructionPointer;
+    private boolean hasInstructionPointerBeenModified;
 
     private Instruction() {}
 
@@ -27,57 +29,71 @@ class Instruction {
         return instruction;
     }
 
-    private void processParameters(List<Integer> copyList, int current) {
+    private void processParameters(List<Integer> list, int current) {
         parameters = new int[parameterModes.length];
         for (int i = 0; i < parameters.length; i++) {
-            parameters[i] = copyList.get(current + i);
+            parameters[i] = list.get(current + i);
         }
+
         switch (opcode) {
             case 1 :
-                int firstParameter = getParameterByMode(copyList, 0);
-                int secondParameter = getParameterByMode(copyList, 1);
+                int firstParameter = getParameterByMode(list, 0);
+                int secondParameter = getParameterByMode(list, 1);
                 int nextValue = firstParameter + secondParameter;
-                copyList.set(parameters[2], nextValue);
+                list.set(parameters[2], nextValue);
                 break;
             case 2 :
-                firstParameter = getParameterByMode(copyList, 0);
-                secondParameter = getParameterByMode(copyList, 1);
+                firstParameter = getParameterByMode(list, 0);
+                secondParameter = getParameterByMode(list, 1);
                 nextValue = firstParameter * secondParameter;
-                copyList.set(parameters[2], nextValue);
+                list.set(parameters[2], nextValue);
                 break;
             case 3 :
-                copyList.set(parameters[0], inputNumber);
+                list.set(parameters[0], inputNumber);
                 break;
             case 4 :
-                output = copyList.get(parameters[0]);
+                output = getParameterByMode(list, 0);
+                break;
+            case 5 :
+                if (getParameterByMode(list, 0) != 0) {
+                    instructionPointer = parameters[1];
+                    hasInstructionPointerBeenModified = true;
+                }
+                break;
+            case 6 :
+                if (getParameterByMode(list, 0) == 0) {
+                    instructionPointer = parameters[1];
+                    hasInstructionPointerBeenModified = true;
+                }
+                break;
+            case 7 :
+                int val = getParameterByMode(list, 0) < getParameterByMode(list, 1) ? 1 : 0;
+                list.set(parameters[2], val);
+                break;
+            case 8 :
+                val = getParameterByMode(list, 0) == getParameterByMode(list, 1) ? 1 : 0;
+                list.set(parameters[2], val);
                 break;
             default :
                 throw new IllegalArgumentException("Unknown opcode [" + opcode + "]");
         }
     }
 
-    private int getParameterByMode(List<Integer> copyList, int i) {
+    private int getParameterByMode(List<Integer> list, int i) {
         // mode == 0 -> position mode
         // mode == 1 -> immediate mode
-        return parameterModes[i] == 0 ? copyList.get(parameters[i]) : parameters[i];
+        return parameterModes[i] == 0 ? list.get(parameters[i]) : parameters[i];
     }
 
     private void parseParameterModes() {
-        switch (opcode) {
-            case 1 :
-                parameterModes = new int[3];
-                break;
-            case 2 :
-                parameterModes = new int[3];
-                break;
-            case 3 :
-                parameterModes = new int[1];
-                break;
-            case 4 :
-                parameterModes = new int[1];
-                break;
-            default :
-                throw new IllegalArgumentException("Unknown opcode [" + opcode + "]");
+        if (opcode == 3 || opcode == 4) {
+            parameterModes = new int[1];
+        } else if (opcode == 5 || opcode == 6) {
+            parameterModes = new int[2];
+        } else if (opcode == 1 || opcode == 2 || opcode == 7 || opcode == 8) {
+            parameterModes = new int[3];
+        } else {
+            throw new IllegalArgumentException("Unknown opcode [" + opcode + "]");
         }
         // remove last 2 digits - they contain the opcode
         int modes = originalInstruction / 100;
@@ -88,8 +104,12 @@ class Instruction {
         }
     }
 
-    int getNumMetadata() {
-        return 1 + parameters.length;
+    int getInstructionPointer() {
+        if (hasInstructionPointerBeenModified) {
+            return instructionPointer;
+        } else {
+            return 1 + parameters.length;
+        }
     }
 
     int getOutput() {
