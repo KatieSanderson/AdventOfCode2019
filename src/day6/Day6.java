@@ -3,9 +3,7 @@ package day6;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Day6 {
 
@@ -47,5 +45,35 @@ public class Day6 {
             orbitCount += currentOrbitCount;
         }
         System.out.println("Part 1: " + orbitCount);
+
+        PriorityQueue<OrbitObject> priorityQueue = new PriorityQueue<>(new OrbitObjectComparator());
+        Set<OrbitObject> evaluatedObjects = new HashSet<>();
+        OrbitObject parentObject = objectMap.get("YOU").getParentObject();
+        objectMap.get("YOU").setDistanceFromYou(0);
+        parentObject.setDistanceFromYou(0);
+        priorityQueue.add(parentObject);
+
+        OrbitObject santaObject = objectMap.get("SAN");
+        while (!priorityQueue.isEmpty()) {
+            OrbitObject orbitObject = priorityQueue.poll();
+            if (orbitObject.equals(santaObject)) {
+                System.out.println("Part 2: " + orbitObject.getDistanceFromYou());
+                return;
+            }
+            int currentDistance = orbitObject.getDistanceFromYou();
+            for (OrbitObject child : orbitObject.getChildren()) {
+                if (!evaluatedObjects.contains(child)) {
+                    child.setDistanceFromYou(currentDistance + 1);
+                    priorityQueue.offer(child);
+                    evaluatedObjects.add(child);
+                }
+            }
+            OrbitObject parentOfOrbitObject = orbitObject.getParentObject();
+            if (!evaluatedObjects.contains(parentOfOrbitObject)) {
+                parentOfOrbitObject.setDistanceFromYou(currentDistance + 1);
+                priorityQueue.offer(parentOfOrbitObject);
+                evaluatedObjects.add(parentOfOrbitObject);
+            }
+        }
     }
 }
