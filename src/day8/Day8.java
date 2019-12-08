@@ -3,6 +3,7 @@ package day8;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +23,7 @@ public class Day8 {
         int minZeroes = Integer.MAX_VALUE;
         int output = 0;
 
+        List<List<Integer>> layers = new ArrayList<>();
         for (int i = 0; i < numLayers; i++) {
             List<Integer> layer = input.subList(i * pixelsPerLayer, (i + 1) * pixelsPerLayer);
             int numZeroes = 0;
@@ -36,8 +38,25 @@ public class Day8 {
                 output = numOnes * numTwos;
                 minZeroes = numZeroes;
             }
+            layers.add(layer);
         }
-
         System.out.println("Part 1: " + output);
+
+        System.out.println("Part 2:");
+        List<Integer> color = new ArrayList<>(layers.get(0));
+        for (int i = 0; i < layers.get(0).size(); i++) {
+            for (List<Integer> layer : layers) {
+                if (color.get(i) == 2) {
+                    color.set(i, layer.get(i));
+                }
+            }
+        }
+        for (int i = 0; i < pixelHeight; i++) {
+            for (int j = 0; j < pixelWidth; j++) {
+                System.out.print(color.get(j) == 1 ? "#" : " ");
+            }
+            color.subList(0, pixelWidth).clear();
+            System.out.println();
+        }
     }
 }
