@@ -16,7 +16,7 @@ public class AmplifierRunnable implements Runnable {
                 amplifier.processInstruction(current);
 
                 if (amplifier.hasInstructionPointerBeenModified()) {
-                    current = (int) amplifier.getInstructionPointer();
+                    current = amplifier.getInstructionPointer();
                     amplifier.resetInstructionPointer();
                 } else {
                     current += amplifier.getNumValues();

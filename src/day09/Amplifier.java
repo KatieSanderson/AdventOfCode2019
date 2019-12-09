@@ -20,13 +20,12 @@ class Amplifier {
 
     // program outputs
     private long output;
-    private long instructionPointer;
+    private int instructionPointer;
     private boolean hasInstructionPointerBeenModified;
 
     Amplifier(ArrayList<Long> list) {
         this.list = list;
         inputNumbers = new LinkedList<>();
-//        relativePosition = 0;
     }
 
     void processInstruction(int current) throws InterruptedException {
@@ -92,20 +91,20 @@ class Amplifier {
                 output = getParameterByMode(0);
                 synchronized (nextAmplifier) {
                     nextAmplifier.addInputNumber(output);
-                    if (nextAmplifier.inputNumbers.size() == 1) {
+                    if (nextAmplifier.inputNumbers.size() <= 1) {
                         nextAmplifier.notify();
                     }
                 }
                 break;
             case 5 :
                 if (getParameterByMode(0) != 0) {
-                    instructionPointer = getParameterByMode(1);
+                    instructionPointer = Math.toIntExact(getParameterByMode(1));
                     hasInstructionPointerBeenModified = true;
                 }
                 break;
             case 6 :
                 if (getParameterByMode(0) == 0) {
-                    instructionPointer = getParameterByMode(1);
+                    instructionPointer = Math.toIntExact(getParameterByMode(1));
                     hasInstructionPointerBeenModified = true;
                 }
                 break;
@@ -146,7 +145,7 @@ class Amplifier {
             case 1 :
                 return parameters[i];
             case 2 :
-                return list.get(Math.toIntExact(parameters[i] + relativePosition));
+                return list.get(Math.toIntExact(parameters[i]) + relativePosition);
             default :
                 throw new RuntimeException();
         }
@@ -179,7 +178,7 @@ class Amplifier {
         hasInstructionPointerBeenModified = false;
     }
 
-    long getInstructionPointer() {
+    int getInstructionPointer() {
         return instructionPointer;
     }
 

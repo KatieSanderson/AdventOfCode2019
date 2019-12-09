@@ -14,18 +14,14 @@ public class Day9 {
         ArrayList<Long> input = (ArrayList<Long>) Files.readAllLines(FileSystems.getDefault().getPath("src", "day09", "input.txt")).stream()
                 .flatMap(str -> Arrays.stream(str.split(",")))
                 .map(Long::parseLong).collect(Collectors.toList());
-//        input = (ArrayList<Long>) List.of(109L,1L,204L,-1L,1001L,100L,1L,100L,1008L,100L,16L,101L,1006L,101L,0L,99L);
-        ensureSize(input, input.size() + 2000);
+        ensureSize(input, input.size() + 1000);
 
         List<List<Integer>> phaseSequencesP1 = findValidPhaseSequence(0, 5);
-        List<List<Integer>> phaseSequencesP2 = findValidPhaseSequence(5, 10);
-//        List<List<Integer>> phaseSequencesP1 = List.of(List.of(0, 1, 2, 3, 4));
-//
-        System.out.println("Part 1: " + findMaxOutputFromPhases(input, phaseSequencesP1));
+
+        System.out.println("Part 2: " + findMaxOutputFromPhases(input, phaseSequencesP1));
     }
 
     private static void ensureSize(ArrayList<Long> list, int size) {
-        // Prevent excessive copying while we're adding
         list.ensureCapacity(size);
         while (list.size() < size) {
             list.add(0L);
@@ -42,7 +38,7 @@ public class Day9 {
                 amplifier.addInputNumber(phase);
                 amplifiers.add(amplifier);
             }
-            amplifiers.get(0).addInputNumber(1);
+            amplifiers.get(0).addInputNumber(2);
 
             // connect amplifiers (in circle: A -> B, B -> C, ..., E -> A)
             for (int i = 0; i < amplifiers.size() - 1; i++) {
