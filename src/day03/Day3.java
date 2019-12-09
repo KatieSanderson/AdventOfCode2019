@@ -1,4 +1,4 @@
-package day3;
+package day03;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class Day3 {
 
     public static void main(String[] args) throws IOException {
-        List<String> input = Files.readAllLines(FileSystems.getDefault().getPath("src", "day3", "input.txt"));
+        List<String> input = Files.readAllLines(FileSystems.getDefault().getPath("src", "day03", "input.txt"));
         List<String> wireInput1 = List.of(input.get(0).split(","));
         List<String> wireInput2 = List.of(input.get(1).split(","));
 

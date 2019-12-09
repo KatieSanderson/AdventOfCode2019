@@ -1,4 +1,4 @@
-package day6;
+package day06;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -8,7 +8,7 @@ import java.util.*;
 public class Day6 {
 
     public static void main(String[] args) throws IOException {
-        List<String> input = Files.readAllLines(FileSystems.getDefault().getPath("src", "day6", "input.txt"));
+        List<String> input = Files.readAllLines(FileSystems.getDefault().getPath("src", "day06", "input.txt"));
         Map<String, OrbitObject> objectMap = new HashMap<>();
 
         for (String inputLine : input) {

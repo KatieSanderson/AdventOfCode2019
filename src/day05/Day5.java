@@ -1,4 +1,4 @@
-package day5;
+package day05;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class Day5 {
 
     public static void main(String[] args) throws IOException {
-        List<Integer> input = Files.readAllLines(FileSystems.getDefault().getPath("src", "day5", "input.txt")).stream()
+        List<Integer> input = Files.readAllLines(FileSystems.getDefault().getPath("src", "day05", "input.txt")).stream()
                 .flatMap(str -> Arrays.stream(str.split(",")))
                 .map(Integer::parseInt).collect(Collectors.toList());
 
