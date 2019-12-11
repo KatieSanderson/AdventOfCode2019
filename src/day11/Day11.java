@@ -25,17 +25,22 @@ public class Day11 {
     }
 
     private static long findMaxOutput(List<Long> input) {
+        int maxX = 0;
+        int maxY = 0;
+        int minX = 0;
+        int minY = 0;
         Map<String, Boolean> cells = new HashMap<>();
         // false = black, true = white
         int x = 0;
         int y = 0;
         // 1 is up, 2 is right, 3 is down, 4 is left
         int direction = 0;
+        cells.put(x + " " + y, true);
 
         Amplifier amplifier = new Amplifier(new ArrayList<>(input));
 
         int current = 0;
-        while (amplifier.getList().get(current) != 99) {
+        while (cells.size() < 2322 || amplifier.getList().get(current) != 99) {
             System.out.println(cells.size() + " " + amplifier.getList().get(current) + " at "+ current);
             String identifier = x + " " + y;
             if (!cells.containsKey(identifier)) {
@@ -43,10 +48,8 @@ public class Day11 {
             }
             if (cells.get(identifier)) {
                 amplifier.addInputNumber(1);
-                System.out.println("adding 1");
             } else {
                 amplifier.addInputNumber(0);
-                System.out.println("adding 0");
             }
             Queue<Long> outputs = new LinkedList<>();
             while (outputs.size() < 2 && amplifier.getList().get(current) != 99) {
@@ -67,8 +70,13 @@ public class Day11 {
                     e.printStackTrace();
                 }
             }
+            if (amplifier.getList().get(current) == 99) {
+                System.out.println("99 opcode");
+                break;
+            }
             long firstOutput = outputs.poll();
             if (firstOutput == 1) {
+                System.out.println(cells.containsKey(identifier));
                 cells.put(identifier, true);
             } else {
                 cells.put(identifier, false);
@@ -94,6 +102,18 @@ public class Day11 {
                     x--;
                     break;
             }
+            maxX = Math.max(maxX, x);
+            maxY = Math.max(maxY, y);
+            minX = Math.min(minX, x);
+            minY = Math.min(minY, y);
+        }
+        System.out.println("x: " + minX + "-" + maxX + " y: " + minY + "-" + maxY);
+
+        for (int i = minY; i <= maxY; i++) {
+            for (int j = minX; j <= maxX; j++) {
+                System.out.print((cells.containsKey(j + " " + i) && cells.get(j + " " + i)) ? "#" : " ");
+            }
+            System.out.println();
         }
         return cells.size();
     }
